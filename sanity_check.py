@@ -52,30 +52,28 @@ class DummyVocab():
         self.start_of_word = self.char2id["{"]
         self.end_of_word = self.char2id["}"]
 
-def question_1e_sanity_check(model):
-    """ Sanity check for words2charindices function.
+def question_1e_sanity_check():
+    """ Sanity check for words2charindices function. 
     """
     print ("-"*80)
     print("Running Sanity Check for Question 1e: words2charindices()")
     print ("-"*80)
-    device = "cpu"
     vocab = VocabEntry()
 
     print('Running test on small list of sentences')
-    sentences = [["~d~", "c", "b", "a"], ["a", "b", "c?"]]
-    small_ind = vocab.to_input_tensor_char(sentences, device)
+    sentences = [["a", "b", "c?"], ["~d~", "c", "b", "a"]]
+    small_ind = vocab.words2charindices(sentences)
     small_ind_gold = [[[1, 30, 2], [1, 31, 2], [1, 32, 70, 2]], [[1, 85, 33, 85, 2], [1, 32, 2], [1, 31, 2], [1, 30, 2]]]
-    # assert(small_ind == small_ind_gold), \
-    #     "small test resulted in indices list {:}, expected {:}".format(small_ind, small_ind_gold)
-    #
-    # print('Running test on large list of sentences')
-    # tgt_sents = [['<s>', "Let's", 'start', 'by', 'thinking', 'about', 'the', 'member', 'countries', 'of', 'the', 'OECD,', 'or', 'the', 'Organization', 'of', 'Economic', 'Cooperation', 'and', 'Development.', '</s>'], ['<s>', 'In', 'the', 'case', 'of', 'gun', 'control,', 'we', 'really', 'underestimated', 'our', 'opponents.', '</s>'], ['<s>', 'Let', 'me', 'share', 'with', 'those', 'of', 'you', 'here', 'in', 'the', 'first', 'row.', '</s>'], ['<s>', 'It', 'suggests', 'that', 'we', 'care', 'about', 'the', 'fight,', 'about', 'the', 'challenge.', '</s>'], ['<s>', 'A', 'lot', 'of', 'numbers', 'there.', 'A', 'lot', 'of', 'numbers.', '</s>']]
-    # tgt_ind = vocab.words2charindices(tgt_sents)
-    # tgt_ind_gold = pickle.load(open('./sanity_check_en_es_data/1e_tgt.pkl', 'rb'))
-    # assert(tgt_ind == tgt_ind_gold), "target vocab test resulted in indices list {:}, expected {:}".format(tgt_ind, tgt_ind_gold)
-    #
-    # print("All Sanity Checks Passed for Question 1e: words2charindices()!")
-    model.forward(sentences, sentences)
+    assert(small_ind == small_ind_gold), \
+        "small test resulted in indices list {:}, expected {:}".format(small_ind, small_ind_gold)
+
+    print('Running test on large list of sentences')
+    tgt_sents = [['<s>', "Let's", 'start', 'by', 'thinking', 'about', 'the', 'member', 'countries', 'of', 'the', 'OECD,', 'or', 'the', 'Organization', 'of', 'Economic', 'Cooperation', 'and', 'Development.', '</s>'], ['<s>', 'In', 'the', 'case', 'of', 'gun', 'control,', 'we', 'really', 'underestimated', 'our', 'opponents.', '</s>'], ['<s>', 'Let', 'me', 'share', 'with', 'those', 'of', 'you', 'here', 'in', 'the', 'first', 'row.', '</s>'], ['<s>', 'It', 'suggests', 'that', 'we', 'care', 'about', 'the', 'fight,', 'about', 'the', 'challenge.', '</s>'], ['<s>', 'A', 'lot', 'of', 'numbers', 'there.', 'A', 'lot', 'of', 'numbers.', '</s>']]
+    tgt_ind = vocab.words2charindices(tgt_sents)
+    tgt_ind_gold = pickle.load(open('./sanity_check_en_es_data/1e_tgt.pkl', 'rb'))
+    assert(tgt_ind == tgt_ind_gold), "target vocab test resulted in indices list {:}, expected {:}".format(tgt_ind, tgt_ind_gold)
+
+    print("All Sanity Checks Passed for Question 1e: words2charindices()!")
     print ("-"*80)
 
 def question_1f_sanity_check():
@@ -212,7 +210,7 @@ def main():
         target_vocab=char_vocab)
 
     if args['1e']:
-        question_1e_sanity_check(model)
+        question_1e_sanity_check()
     elif args['1f']:
         question_1f_sanity_check()
     elif args['1j']:

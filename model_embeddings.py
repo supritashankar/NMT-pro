@@ -47,7 +47,6 @@ class ModelEmbeddings(nn.Module):
         self.embeddings = nn.Embedding(len(vocab.char2id), self.char_embed_size, padding_idx=pad_token_idx)
         self.cnn = CNN(output_features=self.embed_size, char_embeddings=self.char_embed_size)
         self.highway = Highway(self.embed_size)
-        # print ("Show self.embeddings", self.embeddings)
         ### END YOUR CODE
 
     def forward(self, input):
@@ -65,22 +64,13 @@ class ModelEmbeddings(nn.Module):
         ## End A4 code
 
         ### YOUR CODE HERE for part 1j
-        # print ("model embedding forward", input.size())
-        # new_input = input.reshape(input.size()[0]*input.size()[1], input.size()[2])
-        # self.x_embeddings = self.embeddings(new_input)
         self.x_embeddings = self.embeddings(input)
         new_embeds = self.x_embeddings.permute(0, 1, 3, 2)
-        # print ("show size", new_embeds.size())
-        # print ("x_embedding", self.x_embeddings.size())
         new_embeds2 = new_embeds.reshape(new_embeds.size()[0] * new_embeds.size()[1], new_embeds.size()[2], new_embeds.size()[3])
-        # new_embeds = self.x_embeddings.reshape(self.x_embeddings.size()[0]*self.x_embeddings.size()[1], self.x_embeddings.size()[3], self.x_embeddings.size()[2])
-        # cnn_model = CNN(output_features=self.embed_size, char_embeddings=self.char_embed_size, m_word=input.size()[2])
         cnn_op = self.cnn.forward(new_embeds2)
         new_res = torch.squeeze(cnn_op, dim=2)
-        #highway_model = Highway(self.embed_size, dropout_prob=0.3)
         highway_op = self.highway.forward(new_res)
         new_highway_op = highway_op.reshape(input.size()[0], input.size()[1], highway_op.size()[1])
         return new_highway_op
-
         ### END YOUR CODE
 
